@@ -1,2 +1,3 @@
 # abac-lib
-ABAC library for microservices architectures.
+
+ABAC library for microservice architectures.
