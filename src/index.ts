@@ -73,6 +73,15 @@ export class AccessControl implements AccessControlInterface {
     const granted: boolean = false;
 
     const permissions: Permission[] = [];
+    for (const role of this.getUserRoles(user)) {
+      if (role in this.policy) {
+        for (const permission in this.policy[role]) {
+          if (this.policy[role][permission].object.startsWith(object)) {
+            permissions.push(this.policy[role][permission]);
+          }
+        }
+      }
+    }
 
     return new Privilege(granted, permissions);
   }
