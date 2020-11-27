@@ -8,8 +8,11 @@ export type User = {
    */
   [x in 'role' | 'roles']: string | string[];
 } & {
+  time?: Date;
   ip?: string; // regex validation needed
-};
+} & {
+    [x in 'org' | 'organization']: string;
+  };
 
 export type Policy = {
   [role: string]: {
@@ -26,11 +29,6 @@ export type Role = {
 export type AccessControlOption = {
   roles: Role[];
   permissions?: Permission[];
-};
-
-export type HowCanDo = {
-  scope?: PermissionScope;
-  operations?: PermissionOperation[];
 };
 
 type CreatePermission = {
@@ -58,6 +56,10 @@ type DeletePermission = {
   operations?: (PermissionOperation.Delete | PermissionOperation.DeleteOne)[];
 };
 
+export type FilterObject = { income?: string[]; outcome?: string[] };
+
+export type CanOption = { scope?: string; operations?: PermissionOperation[] };
+
 type BasePermission = {
   /**
    * Should generate by hash automatically if not provided
@@ -65,7 +67,7 @@ type BasePermission = {
   name?: string;
 
   /**
-   * regex: (^[.]$|([a-zA-Z_$]+[.]?)+)
+   * regex: (^[*]$|([a-zA-Z_$]+[.]?)+)
    */
   object: string;
 
@@ -74,10 +76,7 @@ type BasePermission = {
   /**
    * Default: [ '*' ]
    */
-  filter?: {
-    income?: string[];
-    outcome: string[];
-  };
+  filter?: FilterObject;
 
   /**
    * Cron Like + Duration

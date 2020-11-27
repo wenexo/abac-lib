@@ -1,15 +1,13 @@
-import { AccessControlOption, HowCanDo, Permission, Policy, User } from './types';
-import { AccessControlInterface, FilterInterface } from './interfaces';
+import { AccessControlOption, CanOption, Permission, Policy, User } from './types';
+import { AccessControlInterface } from './interfaces';
+import { Privilege } from 'classes/privilage';
 import { PermissionAction } from './enums';
-import { Filter } from 'classes/filter';
 import hash = require('object-hash');
 
 export class AccessControl implements AccessControlInterface {
-  policy: Policy;
-  filter: Filter;
+  protected policy: Policy;
 
   constructor(option?: AccessControlOption) {
-    this.policy = {};
     this.setPolicy(option);
   }
 
@@ -44,18 +42,38 @@ export class AccessControl implements AccessControlInterface {
     }
   }
 
-  public how(user: User, action: PermissionAction, object: string): HowCanDo[] {
-    throw new Error('Method not implemented.');
-  }
+  public getUserRoles(user: User): string[] {
+    let roles: string[] = [];
 
-  public can(user: User, action: PermissionAction, object: string, option?: HowCanDo): boolean {
-    let userRoles: string[] = [];
     if (typeof (user.role || user.roles) === 'string') {
-      userRoles.push((user.role || user.roles) as string);
+      roles.push((user.role || user.roles) as string);
     } else {
-      userRoles = (user.role || user.roles) as string[];
+      roles = (user.role || user.roles) as string[];
     }
 
-    return false;
+    if (user.org || user.organization) {
+      const organization = user.org || user.organization;
+      for (let i = 0; i < roles.length; i++) {
+        if (!roles[i].startsWith(organization)) {
+          roles.splice(i, 1);
+        }
+      }
+    } else {
+      for (let i = 0; i < roles.length; i++) {
+        if (roles[i].includes('.')) {
+          roles.splice(i, 1);
+        }
+      }
+    }
+
+    return roles;
+  }
+
+  public can(user: User, action: PermissionAction, object: string, option?: CanOption): Privilege {
+    const granted: boolean = false;
+
+    const permissions: Permission[] = [];
+
+    return new Privilege(granted, permissions);
   }
 }
