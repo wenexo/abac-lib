@@ -60,5 +60,8 @@
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
+  },
+  "dependencies": {
+    "object-hash": "^2.0.3"
   }
 }

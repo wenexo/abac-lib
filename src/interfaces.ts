@@ -4,11 +4,6 @@ import { PermissionAction } from './enums';
 export interface AccessControlInterface {
   filter: FilterInterface;
 
-  /**
-   * getter method with get keyword
-   */
-  granted: boolean;
-
   setPolicy(option?: AccessControlOption);
 
   how(user: User, action: PermissionAction, object: string): HowCanDo[];

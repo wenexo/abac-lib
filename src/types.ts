@@ -3,13 +3,19 @@ import { PermissionAction, PermissionOperation, PermissionScope } from './enums'
 export type User = {
   /**
    * Example:
-   * manager, org_name.admin, org_name.team.user
+   * manager, org_name.admin, org_name.team_name.user
    * permission:product_manage, permission:org_name.article_read
    */
   [x in 'role' | 'roles']: string | string[];
 } & {
   ip?: string; // regex validation needed
-} & { [x in 'org' | 'organization']?: string };
+};
+
+export type Policy = {
+  [role: string]: {
+    [permission: string]: Permission;
+  };
+};
 
 export type Role = {
   name: string;
@@ -18,7 +24,7 @@ export type Role = {
 };
 
 export type AccessControlOption = {
-  roles?: Role[];
+  roles: Role[];
   permissions?: Permission[];
 };
 
